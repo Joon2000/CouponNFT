@@ -12,12 +12,6 @@ contract ERC2000 is IERC2000, ERC721 {
     mapping(uint256 => uint64) private currentStampNumber;
     mapping(uint256 => CouponStatus) private couponStatus;
 
-    enum CouponStatus {
-        AVAILABLE,
-        CONSUMED,
-        BURNED
-    }
-
     constructor(string memory name_, string memory symbol_, uint64 _totalStampNumber) ERC721(name_, symbol_) {
         totalStampNumber = _totalStampNumber;
         contractOwner = msg.sender;

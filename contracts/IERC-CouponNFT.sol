@@ -9,6 +9,12 @@ interface IERC2000 {
     */
     event ConsumeCoupon(uint256 indexed tokenId);
 
+    enum CouponStatus {
+        AVAILABLE,
+        CONSUMED,
+        BURNED
+    }
+
     /**
     @notice add one stamp to the coupon NFT
     @dev MUST revert if msg.sender is not the contract owner
@@ -57,4 +63,9 @@ interface IERC2000 {
     @return the boolean of whether the coupon NFT is consumed
     */
     function isConsumed(uint256 tokenId) view external returns (bool);
+
+    /**
+    @return the CouponStatus of the coupon NFT
+    */
+    function getCouponStatus(uint256 tokenId) view external returns (CouponStatus);
 }
