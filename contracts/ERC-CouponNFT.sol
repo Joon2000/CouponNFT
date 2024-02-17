@@ -6,7 +6,7 @@ import "./IERC-CouponNFT.sol";
 
 contract ERC2000 is IERC2000, ERC721 {
     uint256 private latestTokenId = 0;
-    uint64 private fullStampNumber;
+    uint64 private totalStampNumber;
     address private immutable contractOwner;
 
     mapping(uint256 => uint64) private currentStampNumber;
@@ -18,8 +18,8 @@ contract ERC2000 is IERC2000, ERC721 {
         BURNED
     }
 
-    constructor(string memory name_, string memory symbol_, uint64 _fullStampNumber) ERC721(name_, symbol_) {
-        fullStampNumber = _fullStampNumber;
+    constructor(string memory name_, string memory symbol_, uint64 _totalStampNumber) ERC721(name_, symbol_) {
+        totalStampNumber = _totalStampNumber;
         contractOwner = msg.sender;
     }
 
@@ -53,12 +53,12 @@ contract ERC2000 is IERC2000, ERC721 {
         return currentStampNumber[tokenId];
     }
 
-    function getFullStampNumber() view external returns(uint64) {
-        return fullStampNumber;
+    function getTotalStampNumber() view external returns(uint64) {
+        return totalStampNumber;
     }
 
     function _isFull(uint256 tokenId) view internal returns (bool) {
-        return currentStampNumber[tokenId] == fullStampNumber;
+        return currentStampNumber[tokenId] == totalStampNumber;
     }
 
     function isFull(uint256 tokenId) view external returns (bool) {
