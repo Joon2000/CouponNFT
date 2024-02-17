@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
 interface IERC_CouponNFT {
     /**
     @notice Emitted when stamp is added to the coupon NFT of tokenId
@@ -50,7 +53,7 @@ interface IERC_CouponNFT {
     @notice returns the maximum stamp number that a coupon NFT can receive
     @return the number of stamp that the coupon NFT can receive
     */
-    function getFullStampNumber() external view returns (uint64);
+    function getTotalStampNumber() external view returns (uint64);
 
     /**
     @notice Determines whether the coupon NFT has recieved full stamps

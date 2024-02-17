@@ -97,7 +97,7 @@ abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
         return couponStatus[tokenId] == CouponStatus.CONSUMED;
     }
 
-    function getCouponsStatus(
+    function getCouponStatus(
         uint256 tokenId
     ) external view returns (CouponStatus) {
         return couponStatus[tokenId];
