@@ -35,7 +35,7 @@ contract ERC2000 is IERC2000, ERC721 {
 
     function addStampToCoupon(uint256 tokenId) external onlyContractOwner {
         require(couponStatus[tokenId] == CouponStatus.AVAILABLE, "Coupon not available (already consumed or burned)");
-        require(!__isFull(tokenId), "Coupon is full");
+        require(!_isFull(tokenId), "Coupon is full");
         currentStampNumber[tokenId] += 1;
         emit AddStamp(tokenId);
     }
@@ -43,7 +43,7 @@ contract ERC2000 is IERC2000, ERC721 {
     function consumeCoupon(uint256 tokenId) external {
         require(_isApprovedOrOwner(msg.sender, tokenId), "Only owner or Approved can call this function");
         require(couponStatus[tokenId] == CouponStatus.AVAILABLE, "Coupon not available (already consumed or burned)");
-        require(__isFull(tokenId), "Coupon is not full");
+        require(_isFull(tokenId), "Coupon is not full");
         couponStatus[tokenId] = CouponStatus.CONSUMED;
         emit ConsumeCoupon(tokenId);
     }
@@ -57,13 +57,13 @@ contract ERC2000 is IERC2000, ERC721 {
         return fullStampNumber;
     }
 
-    function __isFull(uint256 tokenId) view internal returns (bool) {
+    function _isFull(uint256 tokenId) view internal returns (bool) {
         return currentStampNumber[tokenId] == fullStampNumber;
     }
 
     function isFull(uint256 tokenId) view external returns (bool) {
         require(couponStatus[tokenId] != CouponStatus.BURNED, "The coupon is burned");
-        return __isFull(tokenId);
+        return _isFull(tokenId);
     }
 
     function isConsumed(uint256 tokenId) view external returns (bool) {
