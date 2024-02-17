@@ -1,4 +1,4 @@
-interface IERC2000 {
+interface IERC_CouponNFT {
     /**
     @notice Emitted when stamp is added to the coupon NFT of tokenId
     */
@@ -42,30 +42,34 @@ interface IERC2000 {
     @param tokenId  ID of the coupon NFT to get the number of received stamps
     @return the number of received stamps to the coupon NFT
     */
-    function getCurrentStampNumber(uint256 tokenId) view external returns(uint64);
+    function getCurrentStampNumber(
+        uint256 tokenId
+    ) external view returns (uint64);
 
     /**
     @notice returns the maximum stamp number that a coupon NFT can receive
     @return the number of stamp that the coupon NFT can receive
     */
-    function getFullStampNumber() view external returns(uint64);
+    function getFullStampNumber() external view returns (uint64);
 
     /**
     @notice Determines whether the coupon NFT has recieved full stamps
     @dev MUST revert if token is burned
     @return the boolean of whether the coupon NFT is full 
     */
-    function isFull(uint256 tokenId) view external returns (bool);
+    function isFull(uint256 tokenId) external view returns (bool);
 
     /**
     @notice Determines whether the coupon NFT has been consumed
     @dev MUST revert if token is burned
     @return the boolean of whether the coupon NFT is consumed
     */
-    function isConsumed(uint256 tokenId) view external returns (bool);
+    function isConsumed(uint256 tokenId) external view returns (bool);
 
     /**
     @return the CouponStatus of the coupon NFT
     */
-    function getCouponStatus(uint256 tokenId) view external returns (CouponStatus);
+    function getCouponStatus(
+        uint256 tokenId
+    ) external view returns (CouponStatus);
 }
