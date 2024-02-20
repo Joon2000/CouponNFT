@@ -28,16 +28,6 @@ contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
         _;
     }
 
-    function _isApprovedOrOwner(
-        address spender,
-        uint256 tokenId
-    ) internal view virtual returns (bool) {
-        address owner = ERC721.ownerOf(tokenId);
-        return (spender == owner ||
-            isApprovedForAll(owner, spender) ||
-            getApproved(tokenId) == spender);
-    }
-
     function addStampToCoupon(uint256 tokenId) external onlyContractOwner {
         require(
             couponInfo[tokenId].couponStatus == CouponStatus.AVAILABLE,
@@ -50,7 +40,7 @@ contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
 
     function consumeCoupon(uint256 tokenId) external {
         require(
-            _isApprovedOrOwner(msg.sender, tokenId),
+            _isAuthorized(msg.sender, msg.sender, tokenId),
             "Only owner or Approved can call this function"
         );
         require(
