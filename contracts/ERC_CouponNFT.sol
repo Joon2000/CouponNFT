@@ -4,13 +4,12 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./IERC_CouponNFT.sol";
 
-abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
+contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
     uint256 private latestTokenId = 0;
     uint64 private totalStampNumber;
     address private immutable contractOwner;
 
-    mapping(uint256 => uint64) private currentStampNumber;
-    mapping(uint256 => CouponStatus) private couponStatus;
+    mapping(uint256 => CouponInfo) private couponInfo;
 
     constructor(
         string memory name_,
@@ -41,11 +40,11 @@ abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
 
     function addStampToCoupon(uint256 tokenId) external onlyContractOwner {
         require(
-            couponStatus[tokenId] == CouponStatus.AVAILABLE,
+            couponInfo[tokenId].couponStatus == CouponStatus.AVAILABLE,
             "Coupon not available (already consumed or burned)"
         );
         require(!_isFull(tokenId), "Coupon is full");
-        currentStampNumber[tokenId] += 1;
+        couponInfo[tokenId].currentStampNumber += 1;
         emit AddStamp(tokenId);
     }
 
@@ -55,11 +54,11 @@ abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
             "Only owner or Approved can call this function"
         );
         require(
-            couponStatus[tokenId] == CouponStatus.AVAILABLE,
+            couponInfo[tokenId].couponStatus == CouponStatus.AVAILABLE,
             "Coupon not available (already consumed or burned)"
         );
         require(_isFull(tokenId), "Coupon is not full");
-        couponStatus[tokenId] = CouponStatus.CONSUMED;
+        couponInfo[tokenId].couponStatus = CouponStatus.CONSUMED;
         emit ConsumeCoupon(tokenId);
     }
 
@@ -67,10 +66,10 @@ abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
         uint256 tokenId
     ) external view returns (uint64) {
         require(
-            couponStatus[tokenId] != CouponStatus.BURNED,
+            couponInfo[tokenId].couponStatus != CouponStatus.BURNED,
             "The coupon is burned"
         );
-        return currentStampNumber[tokenId];
+        return couponInfo[tokenId].currentStampNumber;
     }
 
     function getTotalStampNumber() external view returns (uint64) {
@@ -80,16 +79,16 @@ abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
     function getCouponStatus(
         uint256 tokenId
     ) external view returns (CouponStatus) {
-        return couponStatus[tokenId];
+        return couponInfo[tokenId].couponStatus;
     }
 
     function _isFull(uint256 tokenId) internal view returns (bool) {
-        return currentStampNumber[tokenId] == totalStampNumber;
+        return couponInfo[tokenId].currentStampNumber == totalStampNumber;
     }
 
     function isFull(uint256 tokenId) external view returns (bool) {
         require(
-            couponStatus[tokenId] != CouponStatus.BURNED,
+            couponInfo[tokenId].couponStatus != CouponStatus.BURNED,
             "The coupon is burned"
         );
         return _isFull(tokenId);
@@ -97,10 +96,10 @@ abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
 
     function isConsumed(uint256 tokenId) external view returns (bool) {
         require(
-            couponStatus[tokenId] != CouponStatus.BURNED,
+            couponInfo[tokenId].couponStatus != CouponStatus.BURNED,
             "The coupon is burned"
         );
-        return couponStatus[tokenId] == CouponStatus.CONSUMED;
+        return couponInfo[tokenId].couponStatus == CouponStatus.CONSUMED;
     }
 
     function mintCoupon(
@@ -108,15 +107,15 @@ abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
     ) external onlyContractOwner returns (uint256) {
         uint256 tokenId = ++latestTokenId;
         _mint(recipient, tokenId);
-        couponStatus[tokenId] = CouponStatus.AVAILABLE;
-        currentStampNumber[tokenId] = 0;
+        couponInfo[tokenId].couponStatus = CouponStatus.AVAILABLE;
+        couponInfo[tokenId].currentStampNumber = 0;
         return tokenId;
     }
 
     function burnCoupon(
         uint256 tokenId
     ) external onlyContractOwner returns (bool) {
-        couponStatus[tokenId] = CouponStatus.BURNED;
+        couponInfo[tokenId].couponStatus = CouponStatus.BURNED;
         _burn(tokenId);
         return true;
     }
