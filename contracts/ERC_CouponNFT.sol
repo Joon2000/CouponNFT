@@ -77,6 +77,12 @@ abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
         return totalStampNumber;
     }
 
+    function getCouponStatus(
+        uint256 tokenId
+    ) external view returns (CouponStatus) {
+        return couponStatus[tokenId];
+    }
+
     function _isFull(uint256 tokenId) internal view returns (bool) {
         return currentStampNumber[tokenId] == totalStampNumber;
     }
@@ -95,12 +101,6 @@ abstract contract ERC_CouponNFT is IERC_CouponNFT, ERC721 {
             "The coupon is burned"
         );
         return couponStatus[tokenId] == CouponStatus.CONSUMED;
-    }
-
-    function getCouponStatus(
-        uint256 tokenId
-    ) external view returns (CouponStatus) {
-        return couponStatus[tokenId];
     }
 
     function mintCoupon(
