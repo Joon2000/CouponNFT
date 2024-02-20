@@ -56,6 +56,15 @@ interface IERC_CouponNFT {
     function getTotalStampNumber() external view returns (uint64);
 
     /**
+    @notice returns the current coupon status of the coupon NFT
+    @param tokenId  ID of the coupon NFT to get the coupon status
+    @return the CouponStatus of the coupon NFT
+    */
+    function getCouponStatus(
+        uint256 tokenId
+    ) external view returns (CouponStatus);
+
+    /**
     @notice Determines whether the coupon NFT has recieved full stamps
     @dev MUST revert if token is burned
     @return the boolean of whether the coupon NFT is full 
@@ -68,11 +77,4 @@ interface IERC_CouponNFT {
     @return the boolean of whether the coupon NFT is consumed
     */
     function isConsumed(uint256 tokenId) external view returns (bool);
-
-    /**
-    @return the CouponStatus of the coupon NFT
-    */
-    function getCouponStatus(
-        uint256 tokenId
-    ) external view returns (CouponStatus);
 }
